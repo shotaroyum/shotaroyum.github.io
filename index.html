@@ -70,42 +70,13 @@ function drawGoldBar(o){
  x.drawImage(feverBar,-w/2,-h/2,w,h);
  x.restore();
 }
-function drawRunnerFeet(){const phase=elapsed*18;for(let i=0;i<2;i++){const swing=Math.sin(phase+i*Math.PI),lift=Math.max(0,Math.cos(phase+i*Math.PI))*4,fx=heroX+heroW*(.38+i*.26)+swing*7,fy=hy+heroH*.94-lift;x.save();x.translate(fx,fy);x.rotate(swing*.16);x.fillStyle=fever?"#ffe45c":"#fff2fa";x.strokeStyle="#35164f";x.lineWidth=2.5;x.beginPath();x.ellipse(0,0,13,5,0,0,Math.PI*2);x.fill();x.stroke();x.strokeStyle=fever?"#fff7b5":"#ff8dcf";x.lineWidth=2;x.beginPath();x.moveTo(-5,-1);x.lineTo(3,-1);x.stroke();x.fillStyle=fever?"#fff4aa":"#a783ff";x.fillRect(-9,4,18,2);x.restore()}}function pixelHudPanel(xx,yy,ww,hh,accent='#87b8ff'){
- // Stepped corners and layered pixel borders.
- x.fillStyle='rgba(13,7,48,.72)';x.fillRect(xx+4,yy+5,ww,hh);
- x.fillStyle='#241253';x.fillRect(xx+4,yy,ww-8,hh);x.fillRect(xx,yy+4,ww,hh-8);
- x.fillStyle=accent;x.fillRect(xx+3,yy+4,ww-6,hh-8);x.fillRect(xx+5,yy+2,ww-10,hh-4);
- x.fillStyle='#f5e8ff';x.fillRect(xx+7,yy+5,ww-14,3);x.fillRect(xx+5,yy+7,3,hh-14);
- x.fillStyle='#392278';x.fillRect(xx+7,yy+9,ww-14,hh-16);
- x.fillStyle='#211653';x.fillRect(xx+11,yy+13,ww-22,hh-24);
-}
-function pixelStar(px,py,color,scale=1){
- x.fillStyle=color;x.fillRect(px-2*scale,py-scale,4*scale,2*scale);x.fillRect(px-scale,py-2*scale,2*scale,4*scale);x.fillRect(px-scale,py-scale,2*scale,2*scale);
-}
-function pixelCake(px,py){
- x.fillStyle='#fff1c8';x.fillRect(px+2,py,14,3);x.fillStyle='#ff91d3';x.fillRect(px,py+3,18,7);x.fillStyle='#fff0c6';x.fillRect(px+2,py+10,14,3);x.fillStyle='#f8c5ff';x.fillRect(px+1,py+13,16,3);x.fillStyle='#ffdb58';x.fillRect(px+7,py-4,3,4);x.fillStyle='#fff';x.fillRect(px+8,py-5,1,2);
-}
-function hud(){
- x.fillStyle='rgba(36,15,92,.60)';x.fillRect(0,0,W,116);
- x.fillStyle='rgba(255,190,255,.25)';for(let px=0;px<W;px+=24)x.fillRect(px,111,12,4);
- pixelStar(320,16,'#ffd4fa',2);pixelStar(742,18,'#ffe28a',2);pixelStar(988,14,'#ffd4fa',2);
- // Portrait card and player name.
- text('SHOTARO',21,19,14,'#ffe0fa');pixelHudPanel(18,25,108,80,'#ed91df');
- x.fillStyle='#9365d6';x.fillRect(27,35,90,60);x.save();x.beginPath();x.rect(27,35,90,60);x.clip();x.drawImage(hero,29,18,86,103);x.restore();
- // Score and collected-food counter.
- pixelHudPanel(137,23,172,43,'#8ab8ff');text('SCORE',148,39,12,'#ffd4fa');text(String(score).padStart(7,'0'),148,58,20,'#e9f7ff');
- pixelHudPanel(137,72,172,34,'#ffacd9');pixelCake(148,82);text('× '+String(count).padStart(3,'0'),175,96,17,'#fff4ff');
- // Cute segmented Yummy gauge with small milestone stars.
- pixelHudPanel(320,23,420,82,fever?'#ffe06b':'#a9c6ff');text('YUMMY GAUGE',337,42,16,fever?'#fff1a0':'#ffdafa');
- text(String(Math.floor(gauge)).padStart(3,'0')+'%',720,42,13,'#fff3ff','right');
- const gx=334,gy=53,gw=390,gh=30; x.fillStyle='#171148';x.fillRect(gx,gy,gw,gh);x.fillStyle='#dceaff';x.fillRect(gx,gy,gw,3);x.fillRect(gx,gy,3,gh);x.fillStyle='#51428b';x.fillRect(gx+3,gy+3,gw-6,gh-6);
- const segCount=20,segW=15,segGap=3,total=segCount*segW+(segCount-1)*segGap,sx=gx+(gw-total)/2+3,fillUnits=Math.max(0,Math.min(segCount,gauge/100*segCount));
- for(let i=0;i<segCount;i++){const bx=sx+i*(segW+segGap),amount=Math.max(0,Math.min(1,fillUnits-i));x.fillStyle='#211957';x.fillRect(bx,gy+7,segW,16);if(amount>0){const fw=Math.max(1,Math.floor(segW*amount));x.fillStyle=fever?'#ffd84d':'#ff80d4';x.fillRect(bx,gy+7,fw,16);x.fillStyle=fever?'#fff4ad':'#ffe2fa';x.fillRect(bx,gy+7,fw,3);}}
- pixelStar(gx+7+gw/3,gy+15,'#fff0b0',1);pixelStar(gx+7+2*gw/3,gy+15,'#fff0b0',1);pixelStar(gx+gw-12,gy+15,'#fff0b0',1);
- // Fever badge and timer.
- if(fever){pixelHudPanel(751,25,183,72,'#ffdd61');pixelStar(772,44,'#fff2a8',2);text('FEVER TIME',844,47,16,'#fff2a0','center');text('00:'+String(Math.ceil(feverLeft)).padStart(2,'0'),844,78,23,'#fff','center');}
- pixelHudPanel(1015,24,164,74,'#9fc0ff');text('TIME',1097,43,14,'#ffdafa','center');text(String(Math.floor(Math.max(0,300-Math.floor(elapsed))/60)).padStart(2,'0')+':'+String(Math.max(0,300-Math.floor(elapsed))%60).padStart(2,'0'),1097,78,25,'#effaff','center');
-}
+function drawRunnerFeet(){const phase=elapsed*18;for(let i=0;i<2;i++){const swing=Math.sin(phase+i*Math.PI),lift=Math.max(0,Math.cos(phase+i*Math.PI))*4,fx=heroX+heroW*(.38+i*.26)+swing*7,fy=hy+heroH*.94-lift;x.save();x.translate(fx,fy);x.rotate(swing*.16);x.fillStyle=fever?"#ffe45c":"#fff2fa";x.strokeStyle="#35164f";x.lineWidth=2.5;x.beginPath();x.ellipse(0,0,13,5,0,0,Math.PI*2);x.fill();x.stroke();x.strokeStyle=fever?"#fff7b5":"#ff8dcf";x.lineWidth=2;x.beginPath();x.moveTo(-5,-1);x.lineTo(3,-1);x.stroke();x.fillStyle=fever?"#fff4aa":"#a783ff";x.fillRect(-9,4,18,2);x.restore()}}function hud(){x.fillStyle='#26146b55';x.fillRect(0,0,W,112);
+text('SHOTARO',24,27,21,'#ffc6ed');panel(22,36,112,77);x.fillStyle='#ffb8e8';x.fillRect(30,44,96,61);x.save();x.beginPath();x.rect(30,44,96,61);x.clip();x.drawImage(hero,38,36,82,85);x.restore();
+text('♛ SCORE',151,27,21,'#ffbce9');panel(150,37,150,47);text(String(score).padStart(7,'0'),160,67,23,'#e8faff');
+panel(150,88,150,34);text('🍰 × '+String(count).padStart(3,'0'),160,112,19,'#fff');
+text('🍰 YUMMY GAUGE',365,27,20,'#ffc6ed');panel(365,37,360,47);x.fillStyle='#28266f';x.fillRect(375,47,340,27);let gr=x.createLinearGradient(375,0,715,0);gr.addColorStop(0,fever?'#ffe34f':'#ff72c9');gr.addColorStop(1,fever?'#fff7bf':'#ffc1e8');x.fillStyle=gr;x.fillRect(375,47,340*gauge/100,27);
+if(fever){panel(755,37,175,52);text('FEVER TIME',842,56,17,'#fff3a6','center');text('00:'+String(Math.ceil(feverLeft)).padStart(2,'0'),842,78,20,'#fff','center');}
+text('TIME',1068,27,20,'#ffc6ed','center');panel(1025,37,150,52);let s=Math.max(0,300-Math.floor(elapsed));text(String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'),1100,73,26,'#e8faff','center')}
 function drawHazard(o){
  const cx=o.x+o.w/2, cy=o.y+o.h/2+Math.sin(elapsed*7+o.bob)*2;
  x.save();x.translate(cx,cy);
